@@ -5,7 +5,11 @@ const shortid = require("shortid");
 const path = require("path");
 
 const { requireSignin, adminMiddelware } = require("../c_middelware");
-const { addProduct, getProductsBySlug } = require("../controller/product");
+const {
+  addProduct,
+  getProductsBySlug,
+  getProductDetailsById,
+} = require("../controller/product");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,5 +29,5 @@ router.post(
 );
 router.get("/products/:slug", getProductsBySlug);
 // router.get('/category/getcategories', getCategories);
-
+router.get("/product/:productId", getProductDetailsById);
 module.exports = router;
