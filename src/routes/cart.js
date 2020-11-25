@@ -1,8 +1,7 @@
 const express = require("express");
-const router = express.Router();
-
 const { addItemsToCart, getCartItems } = require("../controller/cart");
 const { requireSignin, userMiddelware } = require("../c_middelware");
+const router = express.Router();
 
 router.post(
   "/user/cart/addtocart",

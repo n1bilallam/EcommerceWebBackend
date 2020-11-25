@@ -1,4 +1,3 @@
-const { response } = require("express");
 const Cart = require("../models/cart");
 
 function runUpdate(condition, updateData) {
