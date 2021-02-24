@@ -2,8 +2,10 @@ const express = require("express");
 const env = require("dotenv");
 const app = express();
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -15,6 +17,8 @@ const initialDataRoutes = require("./routes/admin/initialData");
 const pageRoutes = require("./routes/admin/page");
 const addressRoutes = require("./routes/address");
 const orderRoutes = require("./routes/order");
+const orderUpdateRoute = require("./routes/admin/order.route");
+
 //environment variable
 env.config();
 
@@ -25,14 +29,37 @@ mongoose
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
     }
   )
   .then(() => {
     console.log("Db connected -_-");
   });
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// var whiteList = [
+//   process.env.ADMIN_URL,
+//   process.env.CLIENT_URL,
+//   process.env.PUBLIC_IMG,
+// ];
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whiteList.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       return callback(new Error("Not allowed by Admin"));
+//     }
+//   },
+// };
+
+if (process.env.NODE_ENV === "development") {
+  app.use(cors());
+  app.use(morgan("dev"));
+}
 
 //Routes
-app.use(cors());
 app.use(express.json());
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use("/api", authRoutes);
@@ -44,6 +71,7 @@ app.use("/api", initialDataRoutes);
 app.use("/api", pageRoutes);
 app.use("/api", addressRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", orderUpdateRoute);
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
